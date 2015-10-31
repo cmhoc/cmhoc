@@ -1,0 +1,103 @@
+extends ../layout
+
+block content
+  h1 Polling Booth for the #{election.title}
+  
+  form#vote.form-horizontal(role='form', data-toggle="validator")
+    fieldset
+      // Form Name
+      legend Voting
+      .form-group
+        .col-md-6.col-md-offset-4
+          p
+            | Rank the candidates in order of preference
+            | (i.e. the most preferred is ranked 1).<br>
+            | <b>One vote per column. One vote per candidate.</b><br>
+            | Code in parentheses indicates the political party.
+            | <i>L</i> after the code indicates the candidate is the party leader.
+        
+      .form-group
+        label.col-md-4.control-label(for='radios') Ranking
+        .col-md-6
+            table#candidates.table.table-striped.table-hover
+              thead
+                tr
+                  th Candidate
+                  - var ranks = 0
+                  while ranks < candidates.length
+                    th= ++ranks
+              tbody
+                each candidate in candidates
+                  tr
+                    -
+                      var parties = {"CLP": "Classical Liberal Party",
+                      "CPC": "Conservative Party",
+                      "GPC": "Green Party",
+                      "IND": "Independent",
+                      "LPC": "Liberal Party",
+                      "NDP": "New Democratic Party",
+                      "RPC": "Republican Party"};
+                    if candidate.isleader
+                      td 
+                        | #{candidate.username} (<abbr title='#{parties[candidate.party]}'>#{candidate.party}</abbr>-L)
+                    else 
+                      td 
+                        | #{candidate.username} (<abbr title='#{parties[candidate.party]}'>#{candidate.party}</abbr>)
+                    - ranks = 0
+                    while ranks < candidates.length
+                      td
+                        input(type='radio', name=candidate._id, data-column=ranks+1, value=ranks+1, required)
+                        - ranks++
+                    
+      .form-group
+        label.col-md-4.control-label(for='submit') Confirm
+        .col-md-4
+          button#submit.btn.btn-success(type='submit', name='submit') Confirm
+
+block scripts
+  script(src='/bower_components/bootstrap-validator/dist/validator.min.js')
+  script(src='/bower_components/bootbox.js/bootbox.js')
+  script.
+    $("#vote").validator({
+        custom: {
+            column: function($el) {
+                var same_column = $("input:radio[data-column=" + $el.val() + "]:checked");
+                if (same_column.length > 1) return false;
+                return true;
+            }
+        },
+        errors: {
+            column: "One vote per column."
+        }
+    });
+    
+    function columnValid(col) {
+        var same_column = $("input:radio[data-column=" + col + "]:checked");
+        if (same_column.length > 1 || same_column.length === 0) return false;
+        return true;
+    };
+    
+    $("#vote").submit(function(e) {
+        e.preventDefault();
+        var valid = true;
+        
+        for(var i = 0; i < #{candidates.length}; i++) {
+            if(!columnValid(i + 1)) {
+                valid = false;
+            }
+        }
+        
+        if(valid) {
+            $.post('/vote/vote/' + '#{election.id}', $('#vote').serialize())
+                .done(function(response) {
+                    bootbox.alert(response.message, function() {
+                        window.location.href = 'https://reddit.com/r/cmhoc';
+                    });
+                })
+                .fail(function(response) {
+                    bootbox.alert(response.error);
+                });
+        } else {
+            bootbox.alert("Only one vote per candidate and one vote per column please.");
+        }
+    });

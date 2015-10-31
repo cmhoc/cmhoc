@@ -1,0 +1,41 @@
+extends layout
+block extraHeader
+    link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css')
+block content
+    .col-md-4.col-md-offset-4
+        if !session.logged
+            - returnurl = (returnurl === '' ? '' : '?returnurl=' + returnurl);
+            h1.text-center Log in
+            p
+             | No information other than publicly available 
+             | information such as username and signup date are collected
+             | through reddit.
+             | Your password is not collected in anyway as you can confirm at
+             | reddit authentication page (only 'identity' scope is authorized,
+             | see <a href='https://www.reddit.com/dev/api/oauth#GET_api_v1_me'>
+             | here</a>).
+             | Cookies are used. IP are collected and will be
+             | destroyed after election.
+             | If you still don't want to use this site or
+             | if there is any problem, contact <a href='https://www.reddit.com/message/compose/?to=zhantongz'>
+             | /u/zhantongz</a> for alternative ballot.
+            a.btn.btn-primary.btn-block(href='/redditoauth/redirect' + returnurl) Login with Reddit
+        else
+            h2 You are already logged in.
+            a.btn.btn-warning.btn-block(href='/login/out') Log out here
+        if oautherr
+            .row(style='height:50px;')
+            .panel.panel-danger
+                .panel-heading
+                    h3.panel-title Error
+                .panel-body
+                    p
+                        |Error occured when trying to authenticate with Reddit. Contact the Speaker (/u/zhantongz)
+                        |with details if you have any question. Detail:
+
+                    if oautherr === 'access_denied'
+                        p You probably denied the Elections Commissioner access to your identity.
+                    else if oautherr === 'invalid_scope'
+                        p Sorry, probably programming error. Contact the Speaker with the issue.
+                    else
+                        p Unknown error. Contact the Speaker.

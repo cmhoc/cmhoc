@@ -1,0 +1,40 @@
+extends layout
+
+block content
+    h1= title
+
+    table.table.table-striped.table-hover
+        thead
+            tr
+                th Election
+                th Type
+                th Start
+                th End
+                th Vote
+        tbody
+            each election in elections
+                - var electype = election.type
+                if electype == 'general'
+                    - electype = 'General election'
+                else if electype == 'by'
+                    - electype = 'By-election'
+                else
+                    - electype = 'Not applicable'
+
+                tr
+                    td= election.title
+                    td= electype
+                    td= election.start
+                    td= election.end
+                    if !election.result
+                        if Date.now() < election.end
+                            if Date.now() > election.start
+                                td
+                                    a(href='/electionvote/' + election.votes) Vote now
+                            else
+                                   td Voting yet to start
+                        else
+                            td Voting ended
+                    else
+                        td
+                            a(href='/memberstanding/' + election.result) Result

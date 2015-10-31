@@ -1,0 +1,102 @@
+extends ../layout
+block content
+  h1 Candidate Information Update
+  form.form-horizontal#upd(data-toggle='validator', role='form')
+    fieldset
+      // Form Name
+      legend Candidate Information
+      // Text input
+      .form-group
+        label.col-md-4.control-label(for='username') Username
+        .col-md-4
+          input#username.form-control.input-md(name='username', value=session.user.name, type='text', required, readonly)
+      // Select Basic
+      .form-group
+        label.col-md-4.control-label(for='party') Party
+        .col-md-4
+          if isleader
+            select#party.form-control(name='party', disabled, value=party)
+              -
+                var parties = {"CLP": "Classical Liberal Party",
+                            "CPC": "Conservative Party",
+                            "GPC": "Green Party",
+                            "IND": "Independent",
+                            "LPC": "Liberal Party",
+                            "NDP": "New Democratic Party",
+                            "RPC": "Republican Party"};
+              each val, index in parties
+                if index == candidate.party
+                  option(value=index,selected)= val
+                else
+                  option(value=index)= val
+          else
+            select#party.form-control(name='party')
+              -
+                var parties = {"CLP": "Classical Liberal Party",
+                            "CPC": "Conservative Party",
+                            "GPC": "Green Party",
+                            "IND": "Independent",
+                            "LPC": "Liberal Party",
+                            "NDP": "New Democratic Party",
+                            "RPC": "Republican Party"};
+              each val, index in parties
+                if index == candidate.elecdist
+                  option(value=index,selected)= val
+                else
+                  option(value=index)= val
+      // Select Basic
+      .form-group
+        label.col-md-4.control-label(for='elecdist') Electoral District
+        .col-md-4
+          select#elecdist.form-control(name='elecdist')
+            -
+              var eds = {"ATL": "Atlantic (New Brunswick, Nova Scotia, Newfoundland and Labrador, Prince Edward Island)",
+                      "SMN": "Saskatchewan, Manitoba and Nunavut",
+                      "ANT": "Alberta and the Northwest Territories",
+                      "BCY": "British Columbia and Yukon",
+                      "QBC": "Quebec",
+                      "ONT": "Ontario (including National Capital Region)"};
+            each val, index in eds
+              if index == candidate.elecdist
+                option(value=index,selected)= val
+              else
+                option(value=index)= val
+      // Multiple Checkboxes
+      .form-group
+        label.col-md-4.control-label(for='conditions') Conditions
+        .col-md-4
+          .checkbox
+            label(for='conditions-2')
+              input#conditions-2(type='checkbox', name='conditions', value='3', data-error='', required)
+              |       You are a genuine member of the political party you selected above if you are not an independent.
+      .form-group
+        if isleader
+          input(type='hidden', name='isleader', value='true')
+          input(type='hidden', name='endorsed', value='true')
+          if party != 'SPEAKER'
+            input(type='hidden', name='party', value=party)
+          else
+            input(type='hidden', name='party', value='LPC')
+        else
+          input(type='hidden', name='isleader', value='false')
+          input(type='hidden', name='endorsed', value='false')
+
+      .form-group
+        label.col-md-4.control-label(for='submit') Submit
+        .col-md-4
+          button#submit.btn.btn-success(type='submit', name='submit') Submit
+          //button#submit.btn.btn-danger(type='submit', name='submit') Submit
+        label.col-md-4.control-label(for='delete') For withdrawal, contact the Speaker.
+block scripts
+  script(src='/bower_components/bootstrap-validator/dist/validator.min.js')
+  script(src='/bower_components/bootbox.js/bootbox.js')
+  script
+    | $("form").submit(function (e) {
+    |     e.preventDefault();
+    |     $.ajax('/candidate/'+'#{candidate._id}', {data: $('form').serialize(), method: 'PUT'})
+    |         .done(function (response) {
+    |             bootbox.alert(response.message, function() {
+    |                 window.location.href='/candidates';
+    |             });
+    |         });
+    | });

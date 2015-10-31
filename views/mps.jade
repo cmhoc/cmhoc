@@ -1,0 +1,27 @@
+//
+   Created by Zhantong on 2015-10-12.
+
+extends layout
+
+block content
+    h1 Members of Parliament of the #{parl_number_o} Parliament
+
+    table.table.table-striped.table-hover
+        thead
+            tr
+                th Username
+                th Position
+                th Party
+                th Riding
+                th Electoral District
+        tbody
+            each members,type in all_members
+                tr.info
+                    td(colspan='5')= type
+                each member in members
+                     tr
+                        td= member.username
+                        td= member.position
+                        td= member.party
+                        td= member.riding
+                        td= member.elecdist

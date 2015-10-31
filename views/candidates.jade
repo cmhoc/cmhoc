@@ -1,0 +1,52 @@
+extends layout
+
+block content
+  h1 Candidates for the #{elec_title}
+
+  //
+    if !isCandidate
+      a.btn.btn-primary.btn-block(href='/candidates/register') Register as a candidate
+    else
+      a.btn.btn-primary.btn-block(href='/candidates/update') Update candidate information
+    if isleader
+      a.btn.btn-success.btn-block(href='/candidates/process') Process candidates (party leaders only)
+    .row(style='height:50px;')
+
+  table.table.table-striped.table-hover
+    thead
+      tr
+        th Username
+        th Party
+        th Leader
+        th Electoral District
+        th Officially Endorsed by Party
+    tbody
+      each candidate in candidates
+        tr
+          td= candidate.username
+          -
+            var parties = {"CLP": "Classical Liberal Party",
+            "CPC": "Conservative Party",
+            "GPC": "Green Party",
+            "IND": "Independent",
+            "LPC": "Liberal Party",
+            "NDP": "New Democratic Party",
+            "RPC": "Republican Party"};
+          td
+            abbr(title=parties[candidate.party])= candidate.party
+          if candidate.isleader
+            td Yes
+          else
+            td No
+          -
+            var eds = {"ATL": "Atlantic (New Brunswick, Nova Scotia, Newfoundland and Labrador, Prince Edward Island)",
+            "SMN": "Saskatchewan, Manitoba and Nunavut",
+            "ANT": "Alberta and the Northwest Territories",
+            "BCY": "British Columbia and Yukon",
+            "QBC": "Quebec",
+            "ONT": "Ontario (including National Capital Region)"};
+          td= eds[candidate.elecdist]
+          if candidate.endorsed
+            td Yes
+          else
+            td No

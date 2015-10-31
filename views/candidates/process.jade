@@ -1,0 +1,38 @@
+extends ../layout
+block content
+  h1 Process Candidates
+  form#proc(role='form')
+    table#candidates.table.table-striped.table-hover
+      thead
+        tr
+          th Username
+          th Party
+          th Leader
+          th Electoral District
+          th Officially Endorsed by Party
+      tbody
+        each candidate in candidates
+          tr
+            td= candidate.username
+            td= candidate.party
+            if candidate.isleader
+              td Yes
+            else
+              td No
+            td= candidate.elecdist
+            td(data-container='body')
+              if candidate.endorsed
+                input(type='checkbox', name=candidate._id, value='true', checked)
+              else
+                input(type='checkbox', name=candidate._id, value='false')
+
+block scripts
+  script
+    | $('#candidates').on('click', 'input[type="checkbox"]', function () {
+    |     cb = $(this);
+    |     cb.val(cb.prop('checked'));
+    |     $.ajax('/candidate/' + cb.attr("name"), {data: {endorsed: cb.prop('checked')}, method: 'PATCH'})
+    |         .done(function (response) {
+    |             cb.popover({content: response.message, trigger: 'focus'}).popover('show');
+    |         });
+    | });

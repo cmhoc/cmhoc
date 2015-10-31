@@ -1,0 +1,46 @@
+extends ../layout
+
+block content
+  h1 Polling Booth for the #{election.title}
+  
+  form.form-horizontal#distsel(data-toggle='validator', role='form')
+    fieldset
+      // Form Name
+      legend Elector Registration
+      // Multiple Radios
+      .form-group
+        label.col-md-4.control-label(for='radios') Electoral District
+        .col-md-4
+          -
+            var eds = {"ATL": "Atlantic (New Brunswick, Nova Scotia, Newfoundland and Labrador, Prince Edward Island)",
+              "SMN": "Saskatchewan, Manitoba and Nunavut",
+              "ANT": "Alberta and the Northwest Territories",
+              "BCY": "British Columbia and Yukon",
+              "ONT": "Ontario (including National Capital Region)"};
+          each name, code in eds
+            .radio
+              label(for='sel' + code)
+                input(id='sel' + code, type='radio', name='elec_dist', value=code, required)
+                | #{name}
+      .form-group
+        label.col-md-4.control-label(for='conditions') Conditions
+        .col-md-4
+          .checkbox
+            label(for='conditions-0')
+              input#conditions-0(type='checkbox', name='conditions', value='1', data-error='A banned user is ineligible for candidacy.', required)
+              |       Your account is at least 90 days old.
+          .checkbox
+            label(for='conditions-0')
+              input#conditions-0(type='checkbox', name='conditions', value='1', data-error='A banned user is ineligible for candidacy.', required)
+              |       You are not banned in /r/CMHoC.
+          .checkbox
+            label(for='conditions-1')
+              input#conditions-1(type='checkbox', name='conditions', value='2', data-error='Using multiple accounts are strictly forbidden.', required)
+              |       You do not have any duplicate account that is used in /r/CMHoC or the Model World.
+      .form-group
+        label.col-md-4.control-label(for='submit') Confirm
+        .col-md-4
+          button#submit.btn.btn-success(type='submit', name='submit') Confirm
+
+block scripts
+  script(src='/bower_components/bootstrap-validator/dist/validator.min.js')

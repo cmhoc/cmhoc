@@ -1,0 +1,78 @@
+extends ../layout
+block content
+  h1 Candidate Registration
+  form#reg.form-horizontal(data-toggle='validator', role='form')
+    fieldset
+      // Form Name
+      legend Candidate Registration
+      // Text input
+      .form-group
+        label.col-md-4.control-label(for='username') Username
+        .col-md-4
+          input#username.form-control.input-md(name='username', value=session.user.name, type='text', required, readonly)
+      // Select Basic
+      .form-group
+        label.col-md-4.control-label(for='party') Party
+        .col-md-4
+          select#party.form-control(name='party')
+            option(value='CPC') Conservative Party
+            option(value='NDP') New Democratic Party
+            option(value='CLP') Classical Liberal Party
+            option(value='LPC') Liberal Party
+            option(value='RPC') Republican Party
+            option(value='GPC') Green Party
+            option(value='IND') Independent
+      // Select Basic
+      .form-group
+        label.col-md-4.control-label(for='elecdist') Electoral District
+        .col-md-4
+          select#elecdist.form-control(name='elecdist')
+            option(value='ATL') Atlantic (New Brunswick, Nova Scotia, Newfoundland and Labrador, Prince Edward Island)
+            option(value='SMN') Saskatchewan, Manitoba and Nunavut
+            option(value='ANT') Alberta and the Northwest Territories
+            option(value='BCY') British Columbia and Yukon
+            option(value='QBC') Quebec
+            option(value='ONT') Ontario (including National Capital Region)
+      // Multiple Checkboxes
+      .form-group
+        label.col-md-4.control-label(for='conditions') Conditions
+        .col-md-4
+          .checkbox
+            label(for='conditions-0')
+              input#conditions-0(type='checkbox', name='conditions', value='1', data-error='A banned user is ineligible for candidacy.', required)
+              |       You are not banned in /r/CMHoC.
+          .checkbox
+            label(for='conditions-1')
+              input#conditions-1(type='checkbox', name='conditions', value='2', data-error='Using multiple accounts are strictly forbidden.', required)
+              |       You are using this account and this account only in /r/CMHoC and the Model World.
+          .checkbox
+            label(for='conditions-2')
+              input#conditions-2(type='checkbox', name='conditions', value='3', data-error='', required)
+              |       You are a genuine member of the political party you selected above if you are not an independent.
+          .checkbox
+            label(for='conditions-3')
+              input#conditions-3(type='checkbox', name='conditions', value='4', data-error='Constitutional requirement cannot be waived.', required)
+              |       You have 10 comments or submissions associated with this account.
+      .form-group
+        input(type='hidden', name='isleader', value='false')
+        input(type='hidden', name='endorsed', value='false')
+      .form-group
+        label.col-md-4.control-label(for='submit') Submit
+        .col-md-4
+          button#submit.btn.btn-success(type='submit', name='submit') Submit
+block scripts
+  script(src='/bower_components/bootstrap-validator/dist/validator.min.js')
+  script(src='/bower_components/bootbox.js/bootbox.js')
+  script
+    | $("#reg").submit(function (e) {
+    |     e.preventDefault();
+    |     $.post('/candidate', $('#reg').serialize())
+    |         .done(function (response) {
+    |             bootbox.alert(response.message, function() {
+    |                 window.location.href='/candidates';
+    |             });
+    |         })
+    |         .fail(function (response) {
+    |             bootbox.alert(response.error);
+    |         });
+    | });
