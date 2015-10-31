@@ -1,0 +1,51 @@
+{
+  "db": {
+    "uri": "MONGO URI HERE",
+    "user": "DATABASE USER HERE",
+    "pass": "DATABASE PASSWORD HERE"
+  },
+  "redditoauth": {
+    "clientID": "REDDIT APP CLIENT ID HERE",
+    "secret": "REDDIT APP SECRET HERE",
+    "redirectURI": "REDDIT APP REDIRECT URI HERE"
+  },
+  "session": {
+    "secret": "A RANDOM STRING HERE"
+  },
+  "leaders": {
+    "CPC": "piggbam",
+    "LPC": "ExplosiveHorse",
+    "NDP": "moe13111",
+    "CLP": "Himser",
+    "RPC": "1tobedoneX",
+    "GPC": "Karomne",
+    "SPEAKER": "zhantongz"
+  },
+  "banned": [
+    "justalurkingreditor",
+    "justalurkingredittor",
+    "WeAreBRICS",
+    "cae388",
+    "UnitChef",
+    "throwawayboomerangG",
+    "throwawayboomerangD",
+    "throwawayboomerangF"
+    ],
+  "districts": {
+    "ATL": "Atlantic (New Brunswick, Nova Scotia, Newfoundland and Labrador, Prince Edward Island)",
+    "SMN": "Saskatchewan, Manitoba and Nunavut",
+    "ANT": "Alberta and the Northwest Territories",
+    "BCY": "British Columbia and Yukon",
+    "QBC": "Quebec",
+    "ONT": "Ontario (including National Capital Region)"
+  },
+  "parties": {
+    "CLP": "Classical Liberal Party",
+    "CPC": "Conservative Party",
+    "GPC": "Green Party",
+    "IND": "Independent",
+    "LPC": "Liberal Party",
+    "NDP": "New Democratic Party",
+    "RPC": "Republican Party"
+  }
+}

@@ -35,4 +35,4 @@ bower_components
 
 .c9
 
-config
+config/default.json
