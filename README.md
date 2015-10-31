@@ -3,7 +3,7 @@ npm install
 ```
 
 ```sh
-bpwer install
+bower install
 ```
 
 ```sh
